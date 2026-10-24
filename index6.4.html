@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assignment 6.4 — CSS Positioning Practice</title>
+  <style>
+    /* ==========================================================================
+       1. Global Styles & Reset
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #1e293b;
+      background-color: #f8fafc;
+      position: relative; /* Base positioning context */
+    }
+
+    /* ==========================================================================
+       2. Sticky Navigation Bar (position: sticky)
+       ========================================================================== */
+    header.sticky-nav {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 0;
+      z-index: 1000; /* Controlled layering */
+      background-color: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08);
+      border-bottom: 1px solid #e2e8f0;
+      transition: background-color 0.3s ease;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .logo span {
+      background: #2563eb;
+      color: white;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #475569;
+      font-weight: 500;
+      transition: color 0.2s ease;
+      font-size: 0.95rem;
+    }
+
+    .nav-links a:hover {
+      color: #2563eb;
+    }
+
+    /* Helper badge to indicate sticky functionality */
+    .sticky-indicator {
+      font-size: 0.75rem;
+      background-color: #dbeafe;
+      color: #1e40af;
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+      font-weight: 600;
+    }
+
+    /* ==========================================================================
+       3. Main Layout & Scrollable Sections
+       ========================================================================== */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 4rem 1rem 3rem;
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      border-radius: 1rem;
+      margin-bottom: 3rem;
+      border: 1px solid #bfdbfe;
+    }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      color: #1e3a8a;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.125rem;
+      color: #1e40af;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .section {
+      padding: 4rem 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+      color: #0f172a;
+    }
+
+    .section-subtitle {
+      color: #64748b;
+      margin-bottom: 2rem;
+    }
+
+    /* Grid for Cards */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+
+    /* ==========================================================================
+       4. Cards with Relative Parent & Absolute Badge
+       ========================================================================== */
+    .card {
+      /* Step 5: Appropriate position: relative on the parent */
+      position: relative; 
+      background-color: #ffffff;
+      border-radius: 0.75rem;
+      padding: 1.75rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      border: 1px solid #e2e8f0;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      overflow: hidden; /* Clean bounds for decorative badges */
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Step 4: Position absolute badge inside card */
+    .card-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      z-index: 10; /* Step 6: z-index control */
+      padding: 0.35rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-radius: 9999px;
+      color: #ffffff;
+    }
+
+    .badge-primary { background-color: #2563eb; }
+    .badge-success { background-color: #10b981; }
+    .badge-warning { background-color: #f59e0b; }
+    .badge-danger  { background-color: #ef4444; }
+
+    .card-title {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      padding-right: 4rem; /* Prevent overlap with absolute badge */
+      color: #1e293b;
+    }
+
+    .card-text {
+      color: #64748b;
+      font-size: 0.95rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .card-code {
+      background-color: #f1f5f9;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #0f172a;
+    }
+
+    /* Layering overlap demonstration */
+    .overlap-demo-container {
+      position: relative;
+      height: 220px;
+      background: #f1f5f9;
+      border-radius: 8px;
+      margin-top: 1.5rem;
+      padding: 1rem;
+    }
+
+    .overlap-box {
+      position: absolute;
+      width: 160px;
+      height: 120px;
+      padding: 1rem;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+    }
+
+    .box-1 {
+      background-color: #ef4444;
+      top: 20px;
+      left: 20px;
+      z-index: 1; /* Lowest */
+    }
+
+    .box-2 {
+      background-color: #3b82f6;
+      top: 50px;
+      left: 80px;
+      z-index: 3; /* Highest: overlaps Box 1 and 3 */
+    }
+
+    .box-3 {
+      background-color: #10b981;
+      top: 80px;
+      left: 140px;
+      z-index: 2; /* Middle */
+    }
+
+    /* ==========================================================================
+       5. Floating Action Button (position: fixed)
+       ========================================================================== */
+    .floating-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 2000; /* High z-index to stay above content and sticky navbar */
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #ffffff;
+      border: none;
+      border-radius: 9999px;
+      padding: 0.85rem 1.5rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .floating-btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 15px 30px -5px rgba(37, 99, 235, 0.5);
+    }
+
+    .floating-btn:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* Floating Contact Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 3000; /* Topmost layer */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      position: relative;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 450px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: #64748b;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 3rem 1rem;
+      background-color: #0f172a;
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- STEP 2: Sticky Navigation Bar -->
+  <header class="sticky-nav">
+    <div class="nav-container">
+      <a href="#" class="logo">
+        Positioning Demo
+        <span>NAVBAR</span>
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#sticky">Sticky Nav</a></li>
+          <li><a href="#absolute">Absolute Cards</a></li>
+          <li><a href="#zindex">Z-Index</a></li>
+          <li><a href="#fixed">Fixed Button</a></li>
+        </ul>
+      </nav>
+      <span class="sticky-indicator">position: sticky</span>
+    </div>
+  </header>
+
+  <!-- STEP 1: Main Content with Multiple Scrollable Sections -->
+  <main>
+    <section class="hero">
+      <h1>Assignment 6.4: Positioning Practice</h1>
+      <p>Scroll down to observe how <code>sticky</code>, <code>fixed</code>, <code>absolute</code>, <code>relative</code>, and <code>z-index</code> behave on the page.</p>
+    </section>
+
+    <!-- SECTION 1 -->
+    <section id="sticky" class="section">
+      <h2 class="section-title">1. Sticky Navigation</h2>
+      <p class="section-subtitle">Demonstrating <code>position: sticky</code></p>
+      <p>The top navigation bar sticks to the top of the viewport once you scroll past its natural position. Notice how it floats above other content when scrolling through all sections below.</p>
+    </section>
+
+    <!-- SECTION 2: STEP 4 & 5 (Absolute Badges inside Relative Parents) -->
+    <section id="absolute" class="section">
+      <h2 class="section-title">2. Absolute Badges inside Relative Containers</h2>
+      <p class="section-subtitle">Demonstrating <code>position: absolute</code> inside a parent with <code>position: relative</code></p>
+      
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <article class="card">
+          <span class="card-badge badge-primary">New</span>
+          <h3 class="card-title">Product Card</h3>
+          <p class="card-text">This badge is pinned to the top-right corner of this card using absolute positioning.</p>
+          <div class="card-code">
+            Parent: position: relative;<br>
+            Badge: position: absolute; top: 1rem; right: 1rem;
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="card">
+          <span class="card-badge badge-success">Active</span>
+          <h3 class="card-title">User Profile</h3>
+          <p class="card-text">Because the card container is set to relative, the badge stays constrained inside it.</p>
+          <div class="card-code">
+            Parent: position: relative;<br>
+            Badge: position: absolute; top: 1rem; right: 1rem;
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="card">
+          <span class="card-badge badge-warning">Pending</span>
+          <h3 class="card-title">Task Item</h3>
+          <p class="card-text">Without position: relative on the parent, the badge would align to the entire page body.</p>
+          <div class="card-code">
+            Parent: position: relative;<br>
+            Badge: position: absolute; top: 1rem; right: 1rem;
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- SECTION 3: STEP 6 (Z-Index Controls) -->
+    <section id="zindex" class="section">
+      <h2 class="section-title">3. Layering Overlapping Elements</h2>
+      <p class="section-subtitle">Demonstrating stacking order using <code>z-index</code></p>
+      <p>Elements with higher <code>z-index</code> values render on top of elements with lower values within the same stacking context.</p>
+
+      <div class="overlap-demo-container">
+        <div class="overlap-box box-1">
+          Box 1<br>
+          <code>z-index: 1</code>
+        </div>
+        <div class="overlap-box box-2">
+          Box 2<br>
+          <code>z-index: 3</code> (Top)
+        </div>
+        <div class="overlap-box box-3">
+          Box 3<br>
+          <code>z-index: 2</code>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4 -->
+    <section id="fixed" class="section">
+      <h2 class="section-title">4. Fixed Positioning</h2>
+      <p class="section-subtitle">Demonstrating <code>position: fixed</code></p>
+      <p>Look at the bottom right corner of your screen. The floating blue button stays pinned in place regardless of scrolling.</p>
+    </section>
+  </main>
+
+  <!-- STEP 3: Floating Action Button (position: fixed) -->
+  <button class="floating-btn" id="contactBtn">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+    </svg>
+    <span>Help &amp; Contact</span>
+  </button>
+
+  <!-- Interactive Modal triggered by Fixed Button -->
+  <div class="modal-overlay" id="contactModal">
+    <div class="modal-card">
+      <button class="close-modal" id="closeModal">&times;</button>
+      <h3 style="margin-bottom: 0.5rem; color: #0f172a;">Contact Support</h3>
+      <p style="color: #64748b; margin-bottom: 1rem; font-size: 0.9rem;">
+        This modal pops up over all elements because it uses <code>position: fixed</code> and a high <code>z-index: 3000</code>.
+      </p>
+      <button onclick="toggleModal(false)" style="background: #2563eb; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;">Close Window</button>
+    </div>
+  </div>
+
+  <footer>
+    <p>Assignment 6.4 — Positioning Practice Complete Submission</p>
+  </footer>
+
+  <script>
+    // JS functionality for the modal interaction
+    const contactBtn = document.getElementById('contactBtn');
+    const contactModal = document.getElementById('contactModal');
+    const closeModal = document.getElementById('closeModal');
+
+    function toggleModal(show) {
+      if (show) {
+        contactModal.classList.add('active');
+      } else {
+        contactModal.classList.remove('active');
+      }
+    }
+
+    contactBtn.addEventListener('click', () => toggleModal(true));
+    closeModal.addEventListener('click', () => toggleModal(false));
+    contactModal.addEventListener('click', (e) => {
+      if (e.target === contactModal) toggleModal(false);
+    });
+  </script>
+</body>
+</html>
